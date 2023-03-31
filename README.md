@@ -73,6 +73,9 @@ animated_background:
       - "https://cdn.flixel.com/flixel/5363uhabodwwrzgnq6vx.hd.mp4"
 
     'rainy': "https://cdn.flixel.com/flixel/f0w23bd0enxur5ff0bxz.hd.mp4"
+    'snowy':
+      - https://cdn.flixel.com/flixel/ndza6yswd0k6vlboxyhk.hd.mp4
+      - https://cdn.flixel.com/flixel/psi1hhbsshcus8eumtr7.hd.mp4
 
 title: Home
 views: ...
@@ -139,6 +142,9 @@ animated_background:
       - "https://cdn.flixel.com/flixel/5363uhabodwwrzgnq6vx.hd.mp4"
 
     'rainy': "https://cdn.flixel.com/flixel/f0w23bd0enxur5ff0bxz.hd.mp4"
+    'snowy':
+      - https://cdn.flixel.com/flixel/ndza6yswd0k6vlboxyhk.hd.mp4
+      - https://cdn.flixel.com/flixel/psi1hhbsshcus8eumtr7.hd.mp4
 
 
 title: Home
@@ -223,6 +229,9 @@ animated_background:
       - "https://cdn.flixel.com/flixel/5363uhabodwwrzgnq6vx.hd.mp4"
 
     'rainy': "https://cdn.flixel.com/flixel/f0w23bd0enxur5ff0bxz.hd.mp4"
+    'snowy':
+      - https://cdn.flixel.com/flixel/ndza6yswd0k6vlboxyhk.hd.mp4
+      - https://cdn.flixel.com/flixel/psi1hhbsshcus8eumtr7.hd.mp4
   views:
     - path: gaming
       config:
@@ -292,6 +301,9 @@ animated_background:
             - "https://cdn.flixel.com/flixel/5363uhabodwwrzgnq6vx.hd.mp4"
 
           'rainy': "https://cdn.flixel.com/flixel/f0w23bd0enxur5ff0bxz.hd.mp4"
+          'snowy':
+            - https://cdn.flixel.com/flixel/ndza6yswd0k6vlboxyhk.hd.mp4
+            - https://cdn.flixel.com/flixel/psi1hhbsshcus8eumtr7.hd.mp4
 views:
   - path: home
     title: Home
