@@ -1,7 +1,9 @@
+# Fix for Home Assistant 2023.04 styles.css change applied by dreimer1986 #
+
 # MAJOR BREAKING CHANGE IN v0.5.0+
 YOUR ANIMATED BACKGROUND CONFIGURATION WILL NEED TO BE UPDATED, follow the new configuration guidelines below.
 
-# Animated Lovelace Background
+# Animated Lovelace Background by Villhellm (R.I.P.)
 
 This module is for [Lovelace](https://www.home-assistant.io/lovelace) on [Home Assistant](https://www.home-assistant.io/)
 
@@ -34,116 +36,61 @@ animated_background:
   # This entity is just an example, use whatever entity you would like
   entity: "weather.home"
   state_url:
-    'sunny':
-      - "https://cdn.flixel.com/flixel/hlhff0h8md4ev0kju5be.hd.mp4"
-      - "https://cdn.flixel.com/flixel/zjqsoc6ecqhntpl5vacs.hd.mp4"
-      - "https://cdn.flixel.com/flixel/jvw1avupguhfbo11betq.hd.mp4"
-      - "https://cdn.flixel.com/flixel/8cmeusxf3pkanai43djs.hd.mp4"
-      - "https://cdn.flixel.com/flixel/guwb10mfddctfvwioaex.hd.mp4"
-
-    'partlycloudy':
-      - "https://cdn.flixel.com/flixel/13e0s6coh6ayapvdyqnv.hd.mp4"
-      - "https://cdn.flixel.com/flixel/aorl3skmssy7udwopk22.hd.mp4"
-      - "https://cdn.flixel.com/flixel/qed6wvf2igukiioykg3r.hd.mp4"
-      - "https://cdn.flixel.com/flixel/3rd72eezaj6d23ahlo7y.hd.mp4"
-      - "https://cdn.flixel.com/flixel/9m11gd43m6qn3y93ntzp.hd.mp4"
-      - "https://cdn.flixel.com/flixel/hrkw2m8eofib9sk7t1v2.hd.mp4"
-
-    'cloudy':
-      - "https://cdn.flixel.com/flixel/13e0s6coh6ayapvdyqnv.hd.mp4"
-      - "https://cdn.flixel.com/flixel/aorl3skmssy7udwopk22.hd.mp4"
-      - "https://cdn.flixel.com/flixel/qed6wvf2igukiioykg3r.hd.mp4"
-      - "https://cdn.flixel.com/flixel/3rd72eezaj6d23ahlo7y.hd.mp4"
-      - "https://cdn.flixel.com/flixel/9m11gd43m6qn3y93ntzp.hd.mp4"
-      - "https://cdn.flixel.com/flixel/hrkw2m8eofib9sk7t1v2.hd.mp4"
-
-    'mostlycloudy':
-      - "https://cdn.flixel.com/flixel/e95h5cqyvhnrk4ytqt4q.hd.mp4"
-      - "https://cdn.flixel.com/flixel/l2bjw34wnusyf5q2qq3p.hd.mp4"
-      - "https://cdn.flixel.com/flixel/rrgta099ulami3zb9fd2.hd.mp4"
-
-    'clear-night':
-      - "https://cdn.flixel.com/flixel/x9dr8caygivq5secll7i.hd.mp4"
-      - "https://cdn.flixel.com/flixel/v26zyfd6yf0r33s46vpe.hd.mp4"
-      - "https://cdn.flixel.com/flixel/ypy8bw9fgw1zv2b4htp2.hd.mp4"
-      - "https://cdn.flixel.com/flixel/rosz2gi676xhkiw1ut6i.hd.mp4"
-
-    'fog':
-      - "https://cdn.flixel.com/flixel/vwqzlk4turo2449be9uf.hd.mp4"
-      - "https://cdn.flixel.com/flixel/5363uhabodwwrzgnq6vx.hd.mp4"
-
-    'rainy': "https://cdn.flixel.com/flixel/f0w23bd0enxur5ff0bxz.hd.mp4"
-
-title: Home
-views: ...
-```
-
-## Installation Method 2: HACS
-
-### Step 1
-
-Make sure you have [HACS](https://github.com/custom-components/hacs) installed, find Animated Background in the plug section, and install.
-
-### Step 2
-
-Add the resource to your configuration. If you are in yaml mode follow [the lovelace docs](https://www.home-assistant.io/lovelace/dashboards-and-views/#resources) and add the URL `/hacsfiles/lovelace-animated-background/animated-background.js` as a module. If you are using the UI to manage resources then click the button at the top of the Animated Background HACS page to automatically add it to your resources.
-
-### Step 3
-
-Add the custom element in the root of your `ui-lovelace.yaml` (or Lovelace raw configuration if not in yaml mode), not in a view or card.
-Ex:
-```yaml
-animated_background:
-  default_url: "https://cdn.flixel.com/flixel/ypy8bw9fgw1zv2b4htp2.hd.mp4"
-  included_users:
-    - Villhellm
-  # This entity is just an example, use whatever entity you would like
-  entity: "weather.home"
-  state_url:
-    'sunny':
-      - "https://cdn.flixel.com/flixel/hlhff0h8md4ev0kju5be.hd.mp4"
-      - "https://cdn.flixel.com/flixel/zjqsoc6ecqhntpl5vacs.hd.mp4"
-      - "https://cdn.flixel.com/flixel/jvw1avupguhfbo11betq.hd.mp4"
-      - "https://cdn.flixel.com/flixel/8cmeusxf3pkanai43djs.hd.mp4"
-      - "https://cdn.flixel.com/flixel/guwb10mfddctfvwioaex.hd.mp4"
-
-    'partlycloudy':
-      - "https://cdn.flixel.com/flixel/13e0s6coh6ayapvdyqnv.hd.mp4"
-      - "https://cdn.flixel.com/flixel/aorl3skmssy7udwopk22.hd.mp4"
-      - "https://cdn.flixel.com/flixel/qed6wvf2igukiioykg3r.hd.mp4"
-      - "https://cdn.flixel.com/flixel/3rd72eezaj6d23ahlo7y.hd.mp4"
-      - "https://cdn.flixel.com/flixel/9m11gd43m6qn3y93ntzp.hd.mp4"
-      - "https://cdn.flixel.com/flixel/hrkw2m8eofib9sk7t1v2.hd.mp4"
-
-    'cloudy':
-      - "https://cdn.flixel.com/flixel/13e0s6coh6ayapvdyqnv.hd.mp4"
-      - "https://cdn.flixel.com/flixel/aorl3skmssy7udwopk22.hd.mp4"
-      - "https://cdn.flixel.com/flixel/qed6wvf2igukiioykg3r.hd.mp4"
-      - "https://cdn.flixel.com/flixel/3rd72eezaj6d23ahlo7y.hd.mp4"
-      - "https://cdn.flixel.com/flixel/9m11gd43m6qn3y93ntzp.hd.mp4"
-      - "https://cdn.flixel.com/flixel/hrkw2m8eofib9sk7t1v2.hd.mp4"
-
-    'mostlycloudy':
-      - "https://cdn.flixel.com/flixel/e95h5cqyvhnrk4ytqt4q.hd.mp4"
-      - "https://cdn.flixel.com/flixel/l2bjw34wnusyf5q2qq3p.hd.mp4"
-      - "https://cdn.flixel.com/flixel/rrgta099ulami3zb9fd2.hd.mp4"
-
-    'clear-night':
-      - "https://cdn.flixel.com/flixel/x9dr8caygivq5secll7i.hd.mp4"
-      - "https://cdn.flixel.com/flixel/v26zyfd6yf0r33s46vpe.hd.mp4"
-      - "https://cdn.flixel.com/flixel/ypy8bw9fgw1zv2b4htp2.hd.mp4"
-      - "https://cdn.flixel.com/flixel/rosz2gi676xhkiw1ut6i.hd.mp4"
-
-    'fog':
-      - "https://cdn.flixel.com/flixel/vwqzlk4turo2449be9uf.hd.mp4"
-      - "https://cdn.flixel.com/flixel/5363uhabodwwrzgnq6vx.hd.mp4"
-
-    'rainy': "https://cdn.flixel.com/flixel/f0w23bd0enxur5ff0bxz.hd.mp4"
-
+    sunny:
+      - https://cdn.flixel.com/flixel/hlhff0h8md4ev0kju5be.hd.mp4
+      - https://cdn.flixel.com/flixel/zjqsoc6ecqhntpl5vacs.hd.mp4
+      - https://cdn.flixel.com/flixel/jvw1avupguhfbo11betq.hd.mp4
+      - https://cdn.flixel.com/flixel/8cmeusxf3pkanai43djs.hd.mp4
+      - https://cdn.flixel.com/flixel/guwb10mfddctfvwioaex.hd.mp4
+    partlycloudy:
+      - https://cdn.flixel.com/flixel/13e0s6coh6ayapvdyqnv.hd.mp4
+      - https://cdn.flixel.com/flixel/aorl3skmssy7udwopk22.hd.mp4
+      - https://cdn.flixel.com/flixel/qed6wvf2igukiioykg3r.hd.mp4
+      - https://cdn.flixel.com/flixel/3rd72eezaj6d23ahlo7y.hd.mp4
+      - https://cdn.flixel.com/flixel/9m11gd43m6qn3y93ntzp.hd.mp4
+      - https://cdn.flixel.com/flixel/hrkw2m8eofib9sk7t1v2.hd.mp4
+    cloudy:
+      - https://cdn.flixel.com/flixel/3rd72eezaj6d23ahlo7y.hd.mp4
+      - https://cdn.flixel.com/flixel/e95h5cqyvhnrk4ytqt4q.hd.mp4
+      - https://cdn.flixel.com/flixel/l2bjw34wnusyf5q2qq3p.hd.mp4
+      - https://cdn.flixel.com/flixel/rrgta099ulami3zb9fd2.hd.mp4
+    mostlycloudy:
+      - https://cdn.flixel.com/flixel/e95h5cqyvhnrk4ytqt4q.hd.mp4
+      - https://cdn.flixel.com/flixel/l2bjw34wnusyf5q2qq3p.hd.mp4
+      - https://cdn.flixel.com/flixel/rrgta099ulami3zb9fd2.hd.mp4
+    clear-night:
+      - https://cdn.flixel.com/flixel/x9dr8caygivq5secll7i.hd.mp4
+      - https://cdn.flixel.com/flixel/v26zyfd6yf0r33s46vpe.hd.mp4
+      - https://cdn.flixel.com/flixel/ypy8bw9fgw1zv2b4htp2.hd.mp4
+      - https://cdn.flixel.com/flixel/rosz2gi676xhkiw1ut6i.hd.mp4
+    fog:
+      - https://cdn.flixel.com/flixel/vwqzlk4turo2449be9uf.hd.mp4
+      - https://cdn.flixel.com/flixel/5363uhabodwwrzgnq6vx.hd.mp4
+    rainy:
+      - https://cdn.flixel.com/flixel/qti3s5st0srowd9krhcw.hd.mp4
+      - https://cdn.flixel.com/flixel/f0w23bd0enxur5ff0bxz.hd.mp4
+      - https://cdn.flixel.com/flixel/qti3s5st0srowd9krhcw.hd.mp4
+      - https://cdn.flixel.com/flixel/f0w23bd0enxur5ff0bxz.hd.mp4
+    pouring:
+      - https://cdn.flixel.com/flixel/qti3s5st0srowd9krhcw.hd.mp4
+      - https://cdn.flixel.com/flixel/f0w23bd0enxur5ff0bxz.hd.mp4
+    lightning-rainy:
+      - https://cdn.flixel.com/flixel/sbk5sc03j7vay52r3e4o.hd.mp4
+      - https://cdn.flixel.com/flixel/chrgj6raf5q3s6y2so7z.hd.mp4
+    snowy:
+      - https://cdn.flixel.com/flixel/on3ysblo5hzdmrhv1kwh.hd.mp4
+      - https://cdn.flixel.com/flixel/ndza6yswd0k6vlboxyhk.hd.mp4
+      - https://cdn.flixel.com/flixel/psi1hhbsshcus8eumtr7.hd.mp4
+    snowy-rainy:
+      - https://cdn.flixel.com/flixel/on3ysblo5hzdmrhv1kwh.hd.mp4
+      - https://cdn.flixel.com/flixel/psi1hhbsshcus8eumtr7.hd.mp4
+      - https://cdn.flixel.com/flixel/ndza6yswd0k6vlboxyhk.hd.mp4
 
 title: Home
 views: ...
 ```
+
+
 
 # Configuration
 
