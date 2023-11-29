@@ -317,12 +317,12 @@ animated_background:
     
 ```
 # Finding More Vidoes
-1 Go to https://flixel.com/cinemagraphs/
-2 Search for content, find content you like
-2 press F12 open console, Sources, Top > cdn.flixel.com > flixel
-3 find the matching .thumbnail.jpg for the video you want
-4 Right-Click > Copy Link Address
-5 paste into address bar, replace last part of address .thumbnail.jpg?v=1  with .hd.mp4
+1. Go to https://flixel.com/cinemagraphs/
+3. Search for content, find content you like
+2. press F12 open console, Sources, Top > cdn.flixel.com > flixel
+3. find the matching .thumbnail.jpg for the video you want
+4. Right-Click > Copy Link Address
+5. paste into address bar, replace last part of address .thumbnail.jpg?v=1  with .hd.mp4
 
 ![image](https://github.com/TRusselo/lovelace-animated-background/assets/1154815/01967d97-ab51-44cf-91f1-6cf2a842c31f)
 
