@@ -316,6 +316,16 @@ animated_background:
     'below_horizon-off': "https://cdn.flixel.com/flixel/hrkw2m8eofib9sk7t1v2.hd.mp4"
     
 ```
+# Finding More Vidoes
+1 Go to https://flixel.com/cinemagraphs/
+2 Search for content, find content you like
+2 press F12 open console, Sources, Top > cdn.flixel.com > flixel
+3 find the matching .thumbnail.jpg for the video you want
+4 Right-Click > Copy Link Address
+5 paste into address bar, replace last part of address .thumbnail.jpg?v=1  with .hd.mp4
+
+![image](https://github.com/TRusselo/lovelace-animated-background/assets/1154815/01967d97-ab51-44cf-91f1-6cf2a842c31f)
+
 
 # Warning to mobile users
 While I've done my best to perfect the device/user exceptions, I am not perfect. If you are using a mobile device and using an exception to prevent Animated Background from loading, please keep an eye on the Home Assistant app data use. If you notice unusually high usage after installing the plugin open an issue immediately and I will do my best to fix it. With the way themes function after Home Assistant .108 it is possible that the background video is being loaded behind the theme background (though I am pretty sure I've caught and destroyed all the bugs in that area).
