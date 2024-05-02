@@ -56,7 +56,7 @@ function getVars() {
   Root = Root && Root.shadowRoot;
   Root = Root && Root.querySelector("home-assistant-main");
   Root = Root && Root.shadowRoot;
-  Root = Root && Root.querySelector("app-drawer-layout partial-panel-resolver");
+  Root = Root && Root.querySelector("ha-drawer partial-panel-resolver");
   Root = (Root && Root.shadowRoot) || Root;
   Root = Root && Root.querySelector("ha-panel-lovelace");
   if (Root) {
@@ -70,7 +70,7 @@ function getVars() {
     if (Lovelace) {
       Animated_Config = Lovelace.config.animated_background;
     }
-    View_Layout = Root.shadowRoot.getElementById("layout");
+    View_Layout = Root.shadowRoot.getElementById("view");
     View = Root.shadowRoot.getElementById("view");
   }
 }
