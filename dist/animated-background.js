@@ -543,7 +543,7 @@ function removeDefaultBackground(node, current_config) {
   if (current_config.background) {
     background = current_config.background;
   }
-  if (node.style.background != background || (View_Layout?.style.background && View_Layout.style.background != 'transparent')) {
+  if (node.style.background != background || View_Layout.style.background != 'transparent') {
     node.style.background = background;
     View_Layout.style.background = 'transparent';
   }
