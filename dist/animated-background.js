@@ -50,28 +50,36 @@ function randomIntFromInterval(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+function findElementInShadowRoot(selector, root = document) {
+  if (root.querySelector(selector)) {
+    return root.querySelector(selector);
+  }
+  // Check all shadow roots recursively
+  const shadowHosts = root.querySelectorAll('*');
+  for (const host of shadowHosts) {
+    if (host?.shadowRoot) {
+      const found = findElementInShadowRoot(selector, host.shadowRoot);
+      if (found) {
+        return found;
+      }
+    }
+  }
+  return null;
+}
+
+
 //reset all DOM variables
 function getVars() {
-  Root = document.querySelector("home-assistant");
-  Root = Root && Root.shadowRoot;
-  Root = Root && Root.querySelector("home-assistant-main");
-  Root = Root && Root.shadowRoot;
-  Root = Root && Root.querySelector("app-drawer-layout partial-panel-resolver");
-  Root = (Root && Root.shadowRoot) || Root;
-  Root = Root && Root.querySelector("ha-panel-lovelace");
-  if (Root) {
-    Panel_Holder = Root.shadowRoot;
-  }
-  Root = Root && Root.shadowRoot;
-  Root = Root && Root.querySelector("hui-root");
+  Root = findElementInShadowRoot('hui-root')
+  Panel_Holder = findElementInShadowRoot("ha-panel-lovelace")
   Hui = Root;
   if (Root) {
     Lovelace = Root.lovelace;
     if (Lovelace) {
       Animated_Config = Lovelace.config.animated_background;
     }
-    View_Layout = Root.shadowRoot.getElementById("layout");
-    View = Root.shadowRoot.getElementById("view");
+    View_Layout = findElementInShadowRoot("hui-view-container");
+    View = findElementInShadowRoot('hui-view');
   }
 }
 
@@ -535,7 +543,7 @@ function removeDefaultBackground(node, current_config) {
   if (current_config.background) {
     background = current_config.background;
   }
-  if (node.style.background != background || View_Layout.style.background != 'transparent') {
+  if (node.style.background != background || (View_Layout?.style.background && View_Layout.style.background != 'transparent')) {
     node.style.background = background;
     View_Layout.style.background = 'transparent';
   }
