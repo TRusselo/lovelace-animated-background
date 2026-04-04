@@ -517,6 +517,9 @@ function renderBackgroundHTML() {
         hui-masonry-view {
     	  opacity: 0.` + Opacity + `;
         }
+        hui-sections-view {
+    	  opacity: 0.` + Opacity + `;
+        }
       `;
 
 // transparent for top Pannel
@@ -605,7 +608,7 @@ function processDefaultBackground(temp_enabled) {
 
         if (view_holder) {
           view_node_panel = view_holder.querySelector("hui-panel-view")
-          view_node = view_holder.querySelector('hui-view');
+          view_node = view_holder.querySelector('hui-view-background');
         }
 
         if (view_node || view_node_panel) {
