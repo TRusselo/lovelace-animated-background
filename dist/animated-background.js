@@ -513,6 +513,11 @@ function renderBackgroundHTML() {
       }
 
       var transparent_body = document.createElement ("style");
+      // HA's hui-root stylesheet has `hui-view-container > * { display: flex; }`,
+      // an author rule that overrides the UA default of `style { display: none }`.
+      // Force it back so this element can never be laid out and render its own
+      // CSS text, wherever it ends up in the tree.
+      transparent_body.style.display = "none";
       transparent_body.innerHTML = `
         hui-masonry-view {
     	  opacity: 0.` + Opacity + `;
@@ -545,7 +550,10 @@ function renderBackgroundHTML() {
     
       Root.shadowRoot.appendChild(style);
       Root.shadowRoot.appendChild(div);
-      View.insertBefore(transparent_body,View.firstChild);
+      // Attach to the shadow root, not to View (= hui-view-container). Same shadow
+      // tree, so the hui-masonry-view / hui-sections-view selectors still match,
+      // but it is no longer a child that HA's `hui-view-container > *` rule targets.
+      Root.shadowRoot.appendChild(transparent_body);
       
       View.setAttribute ("style","background:none;");
       
