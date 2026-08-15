@@ -1,6 +1,8 @@
-# Fix for Home Assistant 2023.04 styles.css change applied by dreimer1986 #
+## Fix for Home Assistant 2026.04 masonary text ##
 
-# MAJOR BREAKING CHANGE IN v0.5.0+
+## Fix for Home Assistant 2023.04 styles.css change applied by dreimer1986 ##
+
+## MAJOR BREAKING CHANGE IN v0.5.0+ ##
 YOUR ANIMATED BACKGROUND CONFIGURATION WILL NEED TO BE UPDATED, follow the new configuration guidelines below.
 
 # Animated Lovelace Background by Villhellm (R.I.P.)
