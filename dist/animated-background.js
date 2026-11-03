@@ -194,8 +194,8 @@ function currentConfig() {
 
     if (return_config) {
       if (return_config.entity) {
-        var current_state = getEntityState(return_config.entity);
-        var current_url = return_config.state_url[current_state];
+        var current_state = stateKey(return_config);
+        var current_url = return_config.state_url && return_config.state_url[current_state];
         if (current_url) {
           if (current_url == "none") {
             return_config = { enabled: false, reason: "current state('" + current_state + "') state_url is set to 'none'", entity: return_config.entity, default_url: return_config.default_url, state_url: return_config.state_url };
@@ -340,6 +340,21 @@ function getEntityState(entity) {
   return return_state;
 }
 
+//true when night_entity (default sun.sun) says it is night. A missing entity counts as day
+function isNight(config) {
+  var night_state = getEntityState(config.night_entity || "sun.sun");
+  return night_state == "below_horizon" || night_state == "on";
+}
+
+//returns the state_url key to use: '<state>-night' at night if it is defined, otherwise the plain state
+function stateKey(config) {
+  var current_state = getEntityState(config.entity);
+  if (config.state_url && config.state_url[current_state + "-night"] && isNight(config)) {
+    return current_state + "-night";
+  }
+  return current_state;
+}
+
 //main render function
 function renderBackgroundHTML() {
   var current_config = currentConfig();
@@ -358,7 +373,7 @@ function renderBackgroundHTML() {
   if (current_config) {
     if (current_config.entity && current_config.state_url) {
       Previous_Entity = current_config.entity;
-      var current_state = getEntityState(current_config.entity);
+      var current_state = stateKey(current_config);
       if (current_config.state_url[current_state]) {
         if (Previous_State != current_state) {
           View_Loaded = false;
@@ -703,7 +718,8 @@ function run() {
         var current_config = currentConfig();
         if (Loaded) {
           if (current_config && current_config.entity) {
-            var current_state = getEntityState(current_config.entity);
+            //compare the state_url key, not the raw state, so sunset/sunrise also swaps the video
+            var current_state = stateKey(current_config);
             if (Previous_State != current_state) {
               clearMemes();
               renderBackgroundHTML();

@@ -70,11 +70,19 @@ animated_background:
       - https://cdn.flixel.com/flixel/3rd72eezaj6d23ahlo7y.hd.mp4
       - https://cdn.flixel.com/flixel/9m11gd43m6qn3y93ntzp.hd.mp4
       - https://cdn.flixel.com/flixel/hrkw2m8eofib9sk7t1v2.hd.mp4
+    'partlycloudy-night':
+      - https://cdn.flixel.com/flixel/n30f3hj1spdh5nbu5nr5.hd.mp4
+      - https://cdn.flixel.com/flixel/bil1w36qh3edr113dzes.hd.mp4
+      - https://cdn.flixel.com/flixel/gmaj93nssapo1k9zipey.hd.mp4
     'cloudy':
       - https://cdn.flixel.com/flixel/3rd72eezaj6d23ahlo7y.hd.mp4
       - https://cdn.flixel.com/flixel/e95h5cqyvhnrk4ytqt4q.hd.mp4
       - https://cdn.flixel.com/flixel/l2bjw34wnusyf5q2qq3p.hd.mp4
       - https://cdn.flixel.com/flixel/rrgta099ulami3zb9fd2.hd.mp4
+    'cloudy-night':
+      - https://cdn.flixel.com/flixel/5f3qon6hmnjjb64k9h45.hd.mp4
+      - https://cdn.flixel.com/flixel/gmaj93nssapo1k9zipey.hd.mp4
+      - https://cdn.flixel.com/flixel/f80cjcqhfcdkgdbuehut.hd.mp4
     'mostlycloudy':
       - https://cdn.flixel.com/flixel/e95h5cqyvhnrk4ytqt4q.hd.mp4
       - https://cdn.flixel.com/flixel/l2bjw34wnusyf5q2qq3p.hd.mp4
@@ -92,6 +100,8 @@ animated_background:
       - https://cdn.flixel.com/flixel/f0w23bd0enxur5ff0bxz.hd.mp4
       - https://cdn.flixel.com/flixel/qti3s5st0srowd9krhcw.hd.mp4
       - https://cdn.flixel.com/flixel/f0w23bd0enxur5ff0bxz.hd.mp4
+    'rainy-night':
+      - https://cdn.flixel.com/flixel/15y1w1m5y7tidykc4ev2.hd.mp4
     'pouring':
       - https://cdn.flixel.com/flixel/qti3s5st0srowd9krhcw.hd.mp4
       - https://cdn.flixel.com/flixel/f0w23bd0enxur5ff0bxz.hd.mp4
@@ -102,6 +112,9 @@ animated_background:
       - https://cdn.flixel.com/flixel/on3ysblo5hzdmrhv1kwh.hd.mp4
       - https://cdn.flixel.com/flixel/ndza6yswd0k6vlboxyhk.hd.mp4
       - https://cdn.flixel.com/flixel/psi1hhbsshcus8eumtr7.hd.mp4
+    'snowy-night':
+      - https://cdn.flixel.com/flixel/yokk3vd4rbn9lv92c3go.hd.mp4
+      - https://cdn.flixel.com/flixel/lq0kbqr1rtk5ykzd1wgo.hd.mp4
     'snowy-rainy':
       - https://cdn.flixel.com/flixel/on3ysblo5hzdmrhv1kwh.hd.mp4
       - https://cdn.flixel.com/flixel/psi1hhbsshcus8eumtr7.hd.mp4
@@ -111,6 +124,20 @@ views: ...
 ```
 
 The `state_url` keys must match the entity's state exactly. Home Assistant weather entities use these states: `clear-night`, `cloudy`, `exceptional`, `fog`, `hail`, `lightning`, `lightning-rainy`, `partlycloudy`, `pouring`, `rainy`, `snowy`, `snowy-rainy`, `sunny`, `windy`, `windy-variant`. A state with no entry plays `default_url`. The same video can be listed under more than one state when it suits both, and a link listed twice in one state is picked twice as often.
+
+### Night videos
+
+Apart from `clear-night`, a weather entity reports the same state day and night. A `partlycloudy` evening still says `partlycloudy`, so it would play a daytime sky. To fix that, add a key ending in `-night`, such as `partlycloudy-night`, `cloudy-night` or `rainy-night`. While `sun.sun` is `below_horizon`, the script plays the `-night` list for the current state. A state with no `-night` key keeps its normal videos, so you only add night versions where you have them. The background also switches at sunset and sunrise when the weather stays the same.
+
+To use something other than the sun, set `night_entity` to any entity that is `on` or `below_horizon` at night, such as an `input_boolean` or a `binary_sensor`. If the entity doesn't exist, the script treats it as day.
+
+The night videos in the example above are the best matches found on flixel so far:
+- `partlycloudy-night` and `cloudy-night` show night skies with moving clouds.
+- `rainy-night` shows a wet street but no falling rain.
+- `snowy-night` shows snow on the ground but no falling snow.
+- There are no night videos for `pouring`, `lightning-rainy` or `fog` yet, so those play the daytime videos at night.
+
+If you find better ones, see [Finding More Videos](#finding-more-videos).
 
 ## Use local videos (offline)
 
@@ -173,6 +200,7 @@ Configuration for Animated Background goes into the root of your Lovelace config
 | views | list ([views](#view-configuration)) | **Optional** | Allows you to set custom configurations per view
 | groups | list ([group](#group-configuration)) | **Optional** | Allows you to set custom configurations that can be referenced in lovelace view configurations
 | entity | string | **Optional** | Entity to check for state changes
+| night_entity | string | **Optional** | Entity that decides when `<state>-night` keys in `state_url` are used: night is when its state is `below_horizon` or `on`. Default `sun.sun`. See [Night videos](#night-videos)
 | state_url | map | **Optional** | Map of states and video or image urls. Any mp4, webm, or image link will work, even relative `/local/` links. Using locally stored videos will greatly improve loading times. It is recommended to 'cinemagraphs', these videos are only a few seconds long and are meant to loop . Set to 'none' to disable background for the defined state (see example). You can either define a single url or an array. If an array is defined then a random video will be selected from that array. Required if `entity` is defined.
 | included_users | list (string) | **Optional** | List of users that will display animated background. If this option is set any users not included in this list will be excluded.
 | included_devices | list (string) | **Optional** | List of devices that will display animated background. If this option is set any devices not included in this list will be excluded. Ex:  iphone, ipad, windows, macintosh, android
@@ -342,6 +370,7 @@ views:
 | default_url | string or list(string) | **Optional** | If no matching state is found, this is the fallback video url. You can either define a single url or an array. If an array is defined then a random video will be selected from that array.
 | enabled | bool | **Optional** | Set to false to disable Animated Background
 | entity | string | **Optional** | Entity to check for state changes
+| night_entity | string | **Optional** | Entity that decides when `<state>-night` keys in `state_url` are used: night is when its state is `below_horizon` or `on`. Default `sun.sun`. See [Night videos](#night-videos)
 | state_url | map | **Optional** | Map of states and video or image urls. Any mp4, webm, or image will work, even relative `/local/` links. Using locally stored videos will greatly improve loading times. It is recommended to 'cinemagraphs', these videos are only a few seconds long and are meant to loop . Set to 'none' to disable background for the defined state (see example). You can either define a single url or an array. If an array is defined then a random video will be selected from that array. Required if `entity` is defined.
 | included_users | list (string) | **Optional** | List of users that will display animated background. If this option is set any users not included in this list will be excluded.
 | included_devices | list (string) | **Optional** | List of devices that will display animated background. If this option is set any devices not included in this list will be excluded. Ex:  iphone, ipad, windows, macintosh, android
@@ -350,6 +379,8 @@ views:
 | background | string | **Optional** | CSS option for the background overlay. Default is 'transparent'
 
 ## Example if you want a different background for night and day when a switch changes (or any combination of entities)
+For day and night weather backgrounds you don't need this: use `-night` keys instead (see [Night videos](#night-videos)). A template sensor is for combining other entities.
+
 A few people have asked about tying this to multiple entities. The good news is this is already possible with the use of a template sensor. Here is an example of a template sensor that would allow a different background for night/day when a bedroom switch changes.
 
 In the UI, go to **Settings > Devices & services > Helpers > Create helper > Template > Template a sensor**, name it `Sun and Bedroom`, and use this state template:
@@ -389,7 +420,7 @@ animated_background:
     
 ```
 # Finding More Videos
-1. Go to https://flixel.com/cinemagraphs/
+1. Go to https://flixel.com/cinemagraphs/. For night scenes, try the Timelapse, Cityscapes and Long Exposure galleries.
 2. Search for content, find content you like (hover mouse over image to start playback)
 3. Press F12 to open the developer tools, then go to Sources > top > cdn.flixel.com > flixel
 4. Find the matching .thumbnail.jpg for the mp4 video you want
