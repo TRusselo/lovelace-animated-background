@@ -73,7 +73,6 @@ animated_background:
     'partlycloudy-night':
       - https://cdn.flixel.com/flixel/n30f3hj1spdh5nbu5nr5.hd.mp4
       - https://cdn.flixel.com/flixel/bil1w36qh3edr113dzes.hd.mp4
-      - https://cdn.flixel.com/flixel/gmaj93nssapo1k9zipey.hd.mp4
     'cloudy':
       - https://cdn.flixel.com/flixel/3rd72eezaj6d23ahlo7y.hd.mp4
       - https://cdn.flixel.com/flixel/e95h5cqyvhnrk4ytqt4q.hd.mp4
@@ -81,7 +80,6 @@ animated_background:
       - https://cdn.flixel.com/flixel/rrgta099ulami3zb9fd2.hd.mp4
     'cloudy-night':
       - https://cdn.flixel.com/flixel/5f3qon6hmnjjb64k9h45.hd.mp4
-      - https://cdn.flixel.com/flixel/gmaj93nssapo1k9zipey.hd.mp4
       - https://cdn.flixel.com/flixel/f80cjcqhfcdkgdbuehut.hd.mp4
     'mostlycloudy':
       - https://cdn.flixel.com/flixel/e95h5cqyvhnrk4ytqt4q.hd.mp4
@@ -114,7 +112,6 @@ animated_background:
       - https://cdn.flixel.com/flixel/psi1hhbsshcus8eumtr7.hd.mp4
     'snowy-night':
       - https://cdn.flixel.com/flixel/yokk3vd4rbn9lv92c3go.hd.mp4
-      - https://cdn.flixel.com/flixel/lq0kbqr1rtk5ykzd1wgo.hd.mp4
     'snowy-rainy':
       - https://cdn.flixel.com/flixel/on3ysblo5hzdmrhv1kwh.hd.mp4
       - https://cdn.flixel.com/flixel/psi1hhbsshcus8eumtr7.hd.mp4
