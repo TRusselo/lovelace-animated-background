@@ -1,4 +1,4 @@
-## Fix for Home Assistant 2026.04 masonary text ##
+## Fix for Home Assistant 2026.04 masonry text ##
 
 ## Fix for Home Assistant 2023.04 styles.css change applied by dreimer1986 ##
 
@@ -16,25 +16,39 @@ A big thanks to [Customer Header](https://github.com/maykar/custom-header) and [
 Example:
 ![Example](https://raw.githubusercontent.com/Villhellm/README_images/master/Animation.gif)
 
-## Installation Method 1: Manual
+## Installation
 
-### Step 1
+Use one method, not both. If the script is added as a resource twice, two copies run on every page.
 
-Install `animated-background` by copying `animated-background.js` from this repo to `<config directory>/www/animated-background.js` on your Home Assistant instance.
+### Method 1: HACS (recommended)
 
-### Step 2
+1. In HACS, open the menu (⋮) > **Custom repositories**, add `https://github.com/TRusselo/lovelace-animated-background` with the type **Dashboard**, and install **Lovelace Animated Background**.
+2. HACS adds the resource `/hacsfiles/lovelace-animated-background/animated-background.js` for you. If it doesn't, add it yourself as in step 2 of the manual method.
+3. Continue with [Configure your dashboard](#configure-your-dashboard).
 
-Add the resource to your configuration. If you are in yaml mode follow [the lovelace docs](https://www.home-assistant.io/lovelace/dashboards-and-views/#resources). If you are using the UI to manage resources then go you `<your-ha-address>/config/lovelace/resources` and add the URL `/local/animated-background.js` as a javascript module. 
+### Method 2: Manual
 
-### Step 3
+#### Step 1
 
-Add the custom element in the root of your `ui-lovelace.yaml` (or Lovelace raw configuration if not in yaml mode), not in a view or card.
+Copy `dist/animated-background.js` from this repo to `<config directory>/www/animated-background.js` on your Home Assistant instance.
+
+#### Step 2
+
+Add the resource to your configuration. If you are in yaml mode follow [the lovelace docs](https://www.home-assistant.io/lovelace/dashboards-and-views/#resources). If you are using the UI, go to **Settings > Dashboards**, open the menu (⋮) > **Resources**, and add the URL `/local/animated-background.js` as a JavaScript module.
+
+## Configure your dashboard
+
+Add `animated_background` to the root of your dashboard's configuration, not inside a view or card. In the UI, open the dashboard, select the pencil, then ⋮ > **Raw configuration editor**. In yaml mode, use `ui-lovelace.yaml`.
+
+The videos below are streamed from the flixel CDN. To keep the videos on your own server instead, see [Use local videos (offline)](#use-local-videos-offline).
+
 Ex:
 ```yaml
 animated_background:
   default_url: "https://cdn.flixel.com/flixel/ypy8bw9fgw1zv2b4htp2.hd.mp4"
-  included_users:
-    - Villhellm
+  # Optional: only show the background to these users. Leave it out to show it to everyone.
+  # included_users:
+  #   - your_username
   # This entity is just an example, use whatever entity you would like
   entity: "weather.home"
   state_url:
@@ -96,7 +110,53 @@ title: Home
 views: ...
 ```
 
+The `state_url` keys must match the entity's state exactly. Home Assistant weather entities use these states: `clear-night`, `cloudy`, `exceptional`, `fog`, `hail`, `lightning`, `lightning-rainy`, `partlycloudy`, `pouring`, `rainy`, `snowy`, `snowy-rainy`, `sunny`, `windy`, `windy-variant`. A state with no entry plays `default_url`. The same video can be listed under more than one state when it suits both, and a link listed twice in one state is picked twice as often.
 
+## Use local videos (offline)
+
+Streaming every background from the flixel CDN is slow to start and stops working if the CDN goes away. You can save the videos on your Home Assistant server instead.
+
+Home Assistant serves the `<config directory>/www/` folder at `/local/`, so a file at `www/backgrounds/sunny1.mp4` is played from `/local/backgrounds/sunny1.mp4`.
+
+Use `/local/` links only. These do **not** work and show a blank background:
+- `media-source://` links: the script hands the link straight to the video player, which can't open them.
+- Files in Home Assistant's media folder (`/media`): they aren't served at a plain URL.
+
+### Step 1: Download the videos
+
+[`tools/download_videos.py`](tools/download_videos.py) downloads every video listed in [`tools/videos.yaml`](tools/videos.yaml) (the same videos as the example above) and names them by state: `sunny1.mp4`, `sunny2.mp4`, and so on. A link listed under several states is saved once for each state, and a link repeated within one state is saved once but kept twice in the printed config. Run it on any computer with Python 3:
+
+```bash
+pip install requests pyyaml tqdm
+cd tools
+python download_videos.py
+```
+
+The videos are saved in `tools/backgrounds/` (about 130 MB for the full list). Edit `videos.yaml` first to add or remove videos.
+
+### Step 2: Copy them to Home Assistant
+
+Copy the `backgrounds` folder into `<config directory>/www/`, for example with the Samba or File editor app, so you end up with `www/backgrounds/sunny1.mp4`. If `www` didn't exist before, restart Home Assistant once so it starts serving `/local/`.
+
+Check one in a browser: `http://<your-ha-address>:8123/local/backgrounds/sunny1.mp4` should play.
+
+### Step 3: Point the config at them
+
+The script prints a ready-made `state_url` block for the files it saved. Paste it into your config in place of the CDN links:
+
+```yaml
+animated_background:
+  default_url: /local/backgrounds/clear-night3.mp4
+  entity: weather.home
+  state_url:
+    sunny:
+      - /local/backgrounds/sunny1.mp4
+      - /local/backgrounds/sunny2.mp4
+    cloudy:
+      - /local/backgrounds/cloudy1.mp4
+      - /local/backgrounds/cloudy2.mp4
+    # ...one entry per state, as printed by the script
+```
 
 # Configuration
 
@@ -292,26 +352,32 @@ views:
 ## Example if you want a different background for night and day when a switch changes (or any combination of entities)
 A few people have asked about tying this to multiple entities. The good news is this is already possible with the use of a template sensor. Here is an example of a template sensor that would allow a different background for night/day when a bedroom switch changes.
 
-configuration.yaml
-```yaml
-sensor:
-  - platform: template
-    sensors:
-      sun_bedroom:
-        friendly_name: "Sun and Bedroom"
-        value_template: "{{states('sun.sun') + '-' + states('switch.bedroom')}}"
-        #this will return a state like 'above_horizon-on'
+In the UI, go to **Settings > Devices & services > Helpers > Create helper > Template > Template a sensor**, name it `Sun and Bedroom`, and use this state template:
+
+```
+{{ states('sun.sun') + '-' + states('switch.bedroom') }}
 ```
 
+Or in configuration.yaml:
+```yaml
+template:
+  - sensor:
+      - name: "Sun and Bedroom"
+        # this will return a state like 'above_horizon-on'
+        state: "{{ states('sun.sun') + '-' + states('switch.bedroom') }}"
+```
+
+Either way the entity is `sensor.sun_and_bedroom`. (The old `sensor: - platform: template` format is deprecated in Home Assistant.)
+
 `sun.sun` has two states, `above_horizon` and `below_horizon` AKA day and night.
-So now if you use `sensor.sun_bedroom` instead of just `switch.bedroom`, the beginning of the state will give you the binary state of the sun's position.
+So now if you use `sensor.sun_and_bedroom` instead of just `switch.bedroom`, the beginning of the state will give you the binary state of the sun's position.
 Here is an example of an Animated Background configuration that will use this sensor to give a different background based on the switch *and* whether it is day or night.
 
 ui-lovelace.yaml (or raw configuration)
 ```yaml
 animated_background:
   default_url: "https://cdn.flixel.com/flixel/ypy8bw9fgw1zv2b4htp2.hd.mp4"
-  entity: "sensor.sun_bedroom"
+  entity: "sensor.sun_and_bedroom"
   state_url:
     'above_horizon-on': "https://cdn.flixel.com/flixel/hlhff0h8md4ev0kju5be.hd.mp4"
 
@@ -322,13 +388,14 @@ animated_background:
     'below_horizon-off': "https://cdn.flixel.com/flixel/hrkw2m8eofib9sk7t1v2.hd.mp4"
     
 ```
-# Finding More Vidoes
+# Finding More Videos
 1. Go to https://flixel.com/cinemagraphs/
-3. Search for content, find content you like (hover mouse over image to start playback)
-2. press F12 open console, Sources, Top > cdn.flixel.com > flixel
-3. find the matching .thumbnail.jpg for the mp4 video you want
-4. Right-Click > Copy Link Address
-5. paste into address bar, replace last part of address .thumbnail.jpg?v=1  with .hd.mp4
+2. Search for content, find content you like (hover mouse over image to start playback)
+3. Press F12 to open the developer tools, then go to Sources > top > cdn.flixel.com > flixel
+4. Find the matching .thumbnail.jpg for the mp4 video you want
+5. Right-click > Copy Link Address
+6. Paste into the address bar and replace the end of the address, `.thumbnail.jpg?v=1`, with `.hd.mp4`
+7. To keep it offline, add the link to [`tools/videos.yaml`](tools/videos.yaml) and run the download script again (see [Use local videos](#use-local-videos-offline)). Files it already saved are skipped.
 
 ![image](https://github.com/TRusselo/lovelace-animated-background/assets/1154815/01967d97-ab51-44cf-91f1-6cf2a842c31f)
 
