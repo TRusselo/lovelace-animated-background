@@ -555,7 +555,9 @@ function renderBackgroundHTML() {
       // but it is no longer a child that HA's `hui-view-container > *` rule targets.
       Root.shadowRoot.appendChild(transparent_body);
       
-      View.setAttribute ("style","background:none;");
+      // Only clear the background. Replacing the whole style attribute also
+      // wiped the view theme HA stores there as CSS custom properties.
+      View.style.background = "none";
       
       Previous_Url = state_url;
     }
