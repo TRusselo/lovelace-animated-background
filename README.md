@@ -72,14 +72,12 @@ animated_background:
       - https://cdn.flixel.com/flixel/hrkw2m8eofib9sk7t1v2.hd.mp4
     'partlycloudy-night':
       - https://cdn.flixel.com/flixel/n30f3hj1spdh5nbu5nr5.hd.mp4
-      - https://cdn.flixel.com/flixel/bil1w36qh3edr113dzes.hd.mp4
     'cloudy':
       - https://cdn.flixel.com/flixel/3rd72eezaj6d23ahlo7y.hd.mp4
       - https://cdn.flixel.com/flixel/e95h5cqyvhnrk4ytqt4q.hd.mp4
       - https://cdn.flixel.com/flixel/l2bjw34wnusyf5q2qq3p.hd.mp4
       - https://cdn.flixel.com/flixel/rrgta099ulami3zb9fd2.hd.mp4
     'cloudy-night':
-      - https://cdn.flixel.com/flixel/5f3qon6hmnjjb64k9h45.hd.mp4
       - https://cdn.flixel.com/flixel/f80cjcqhfcdkgdbuehut.hd.mp4
     'mostlycloudy':
       - https://cdn.flixel.com/flixel/e95h5cqyvhnrk4ytqt4q.hd.mp4
@@ -417,7 +415,7 @@ animated_background:
     
 ```
 # Finding More Videos
-1. Go to https://flixel.com/cinemagraphs/. For night scenes, try the Timelapse, Cityscapes and Long Exposure galleries.
+1. Go to https://flixel.com/cinemagraphs/. For night scenes, try the Space, Timelapse, Cityscapes and Long Exposure galleries. Check the end of each video before using it: a few have a broken last frame that flashes grey on every loop.
 2. Search for content, find content you like (hover mouse over image to start playback)
 3. Press F12 to open the developer tools, then go to Sources > top > cdn.flixel.com > flixel
 4. Find the matching .thumbnail.jpg for the mp4 video you want
