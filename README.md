@@ -72,6 +72,10 @@ animated_background:
       - https://cdn.flixel.com/flixel/hrkw2m8eofib9sk7t1v2.hd.mp4
     'partlycloudy-night':
       - https://cdn.flixel.com/flixel/n30f3hj1spdh5nbu5nr5.hd.mp4
+      - https://cdn.flixel.com/flixel/ypy8bw9fgw1zv2b4htp2.hd.mp4
+      - https://cdn.flixel.com/flixel/qebkh12wmojz8d35mdw5.hd.mp4
+      - https://cdn.flixel.com/flixel/z2bniytj5b7xzjvkemcr.hd.mp4
+      - https://cdn.flixel.com/flixel/tvvc1uu4i9r361ffoe9m.hd.mp4
     'cloudy':
       - https://cdn.flixel.com/flixel/3rd72eezaj6d23ahlo7y.hd.mp4
       - https://cdn.flixel.com/flixel/e95h5cqyvhnrk4ytqt4q.hd.mp4
@@ -79,6 +83,8 @@ animated_background:
       - https://cdn.flixel.com/flixel/rrgta099ulami3zb9fd2.hd.mp4
     'cloudy-night':
       - https://cdn.flixel.com/flixel/f80cjcqhfcdkgdbuehut.hd.mp4
+      - https://cdn.flixel.com/flixel/ts1p4x68ezcwbofpgaw2.hd.mp4
+      - https://cdn.flixel.com/flixel/7a0iejyutuuc9p8rdss3.hd.mp4
     'mostlycloudy':
       - https://cdn.flixel.com/flixel/e95h5cqyvhnrk4ytqt4q.hd.mp4
       - https://cdn.flixel.com/flixel/l2bjw34wnusyf5q2qq3p.hd.mp4
@@ -127,7 +133,7 @@ Apart from `clear-night`, a weather entity reports the same state day and night.
 To use something other than the sun, set `night_entity` to any entity that is `on` or `below_horizon` at night, such as an `input_boolean` or a `binary_sensor`. If the entity doesn't exist, the script treats it as day.
 
 The night videos in the example above are the best matches found on flixel so far:
-- `partlycloudy-night` and `cloudy-night` show night skies with moving clouds.
+- `partlycloudy-night` and `cloudy-night` mix night skies with moving clouds and views of Earth from orbit, from the Space gallery.
 - `rainy-night` shows a wet street but no falling rain.
 - `snowy-night` shows snow on the ground but no falling snow.
 - There are no night videos for `pouring`, `lightning-rainy` or `fog` yet, so those play the daytime videos at night.
