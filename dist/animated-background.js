@@ -11,6 +11,7 @@ var Animated_Config;
 var Haobj = null;
 var View;
 var Panel_Holder;
+var Panel_Resolver;
 var Debug_Mode = true;
 var Loaded = false;
 var View_Loaded = false;
@@ -59,7 +60,7 @@ function getVars() {
   Root = Root && Root.querySelector("home-assistant-main");
   Root = Root && Root.shadowRoot;
   Root = Root && Root.querySelector("app-drawer-layout partial-panel-resolver, ha-drawer partial-panel-resolver");
-  
+  Panel_Resolver = Root;
   Root = (Root && Root.shadowRoot) || Root;
   Root = Root && Root.querySelector("ha-panel-lovelace");
   if (Root) {
@@ -623,6 +624,20 @@ function processDefaultBackground(temp_enabled) {
     Meme_Remover = setInterval(() => {
       getVars();
       var current_config = currentConfig();
+
+      // Home Assistant 2026.11 paints the dashboard background once, behind
+      // every panel, via `partial-panel-resolver::before` (using the
+      // --ha-panel-background variable). Clear it together with the view
+      // background, otherwise it sits at z-index -1 and covers the injected
+      // video (z-index -10), hiding the animated background.
+      if (Panel_Resolver) {
+        if (temp_enabled) {
+          Panel_Resolver.style.setProperty("--ha-panel-background", "transparent");
+        }
+        else {
+          Panel_Resolver.style.removeProperty("--ha-panel-background");
+        }
+      }
 
       var view_holder;
       var view_node = null;
