@@ -17,6 +17,7 @@ var Loaded = false;
 var View_Loaded = false;
 var Meme_Remover = null;
 var Meme_Count = 0;
+var Wait_Interval = null;
 var Opacity = 99;
 
 //state tracking variables
@@ -24,6 +25,9 @@ let Previous_State;
 let Previous_Entity;
 let Previous_Url;
 let Previous_Config;
+let Previous_Update;
+var Refresh_Timer = null;
+var Refresh_Minutes = null;
 
 function STATUS_MESSAGE(message, force) {
   if (!Debug_Mode) {
@@ -232,100 +236,45 @@ function enabled() {
     return false;
   }
 
-  //Root configuration exceptions
-  if (Animated_Config.excluded_devices) {
-    if (Animated_Config.excluded_devices.some(deviceIncluded)) {
-      if (temp_enabled) {
-        DEBUG_MESSAGE("Current device is excluded", null, true);
-        temp_enabled = false;
-      }
+  var user_name = Haobj.user.name.toLowerCase();
+  function userListed(list) {
+    return list.map(username => username.toLowerCase()).includes(user_name);
+  }
+
+  //exclusions always win, whether they are in the root config or the view/group config
+  var configs = [Animated_Config, current_config];
+  for (var i = 0; i < configs.length; i++) {
+    if (configs[i].excluded_devices && configs[i].excluded_devices.some(deviceIncluded)) {
+      DEBUG_MESSAGE("Current device is excluded", null, true);
+      return false;
+    }
+    if (configs[i].excluded_users && userListed(configs[i].excluded_users)) {
+      DEBUG_MESSAGE("Current user: " + Haobj.user.name + " is excluded", null, true);
+      return false;
     }
   }
 
-  if (Animated_Config.excluded_users) {
-    if (Animated_Config.excluded_users.map(username => username.toLowerCase()).includes(Haobj.user.name.toLowerCase())) {
-      if (temp_enabled) {
-        DEBUG_MESSAGE("Current user: " + Haobj.user.name + " is excluded", null, true);
-        temp_enabled = false;
-      }
-    }
-  }
-
-  if (Animated_Config.included_users) {
-    if (Animated_Config.included_users.map(username => username.toLowerCase()).includes(Haobj.user.name.toLowerCase())) {
-      temp_enabled = true;
-    }
-    else {
-      if (temp_enabled) {
-        DEBUG_MESSAGE("Current user: " + Haobj.user.name + " is not included", null, true);
-        temp_enabled = false;
-      }
-    }
-  }
-
-  if (Animated_Config.included_devices) {
-    if (Animated_Config.included_devices.some(deviceIncluded)) {
-      temp_enabled = true;
-    }
-    else {
-      if (temp_enabled) {
-        DEBUG_MESSAGE("Current device is not included", null, true);
-        temp_enabled = false;
-      }
-    }
-  }
-
-  //Current config overrides (only does anything if curre_config and Animated_Config are different)
-  if (current_config.excluded_devices) {
-    if (current_config.excluded_devices.some(deviceIncluded)) {
-      if (temp_enabled) {
-        DEBUG_MESSAGE("Current device is excluded", null, true);
-        temp_enabled = false;
-      }
-    }
-  }
-
-  if (current_config.excluded_users) {
-    if (current_config.excluded_users.map(username => username.toLowerCase()).includes(Haobj.user.name.toLowerCase())) {
-      if (temp_enabled) {
-        DEBUG_MESSAGE("Current user: " + Haobj.user.name + " is excluded", null, true);
-        temp_enabled = false;
-      }
-    }
-  }
-
-  if (current_config.included_users) {
-    if (current_config.included_users.map(username => username.toLowerCase()).includes(Haobj.user.name.toLowerCase())) {
-      temp_enabled = true;
-    }
-    else {
-      if (temp_enabled) {
-        DEBUG_MESSAGE("Current user: " + Haobj.user.name + " is not included", null, true);
-        temp_enabled = false;
-      }
-    }
-  }
-
-  if (current_config.included_devices) {
-    if (current_config.included_devices.some(deviceIncluded)) {
-      temp_enabled = true;
-    }
-    else {
-      if (temp_enabled) {
-        DEBUG_MESSAGE("Current device is not included", null, true);
-        temp_enabled = false;
-      }
-    }
-  }
-
+  //an explicit enabled flag overrides the inclusion lists, but never an exclusion
   if (current_config.enabled == false) {
-    temp_enabled = false;
+    return false;
   }
   if (current_config.enabled == true) {
-    temp_enabled = true;
+    return true;
   }
 
-  return temp_enabled;
+  //inclusion lists are allowlists. A view/group list replaces the root one, and an empty list allows everyone
+  var included_users = current_config.included_users || Animated_Config.included_users;
+  if (included_users && included_users.length && !userListed(included_users)) {
+    DEBUG_MESSAGE("Current user: " + Haobj.user.name + " is not included", null, true);
+    return false;
+  }
+  var included_devices = current_config.included_devices || Animated_Config.included_devices;
+  if (included_devices && included_devices.length && !included_devices.some(deviceIncluded)) {
+    DEBUG_MESSAGE("Current device is not included", null, true);
+    return false;
+  }
+
+  return true;
 }
 
 
@@ -356,6 +305,47 @@ function stateKey(config) {
   return current_state;
 }
 
+//returns a refresh option from the current config, falling back to the root animated_background config
+function refreshOption(config, key) {
+  if (config && config[key] !== undefined) {
+    return config[key];
+  }
+  return Animated_Config ? Animated_Config[key] : undefined;
+}
+
+//picks a random url from a list, skipping the one already playing when there is another choice
+function pickUrl(url) {
+  if (!Array.isArray(url)) {
+    return url;
+  }
+  var choices = url.filter(u => u != Previous_Url);
+  if (choices.length == 0) {
+    choices = url;
+  }
+  return choices[randomIntFromInterval(0, choices.length - 1)];
+}
+
+//starts, restarts or stops the refresh_interval timer to match the current config
+function syncRefreshTimer(config) {
+  var minutes = parseFloat(refreshOption(config, "refresh_interval"));
+  if (!(minutes > 0)) {
+    minutes = null;
+  }
+  if (minutes == Refresh_Minutes) {
+    return;
+  }
+  clearInterval(Refresh_Timer);
+  Refresh_Timer = null;
+  Refresh_Minutes = minutes;
+  if (minutes) {
+    Refresh_Timer = setInterval(() => {
+      DEBUG_MESSAGE("refresh_interval reached, picking a new background");
+      Previous_State = null;
+      renderBackgroundHTML();
+    }, minutes * 60 * 1000);
+  }
+}
+
 //main render function
 function renderBackgroundHTML() {
   var current_config = currentConfig();
@@ -381,12 +371,7 @@ function renderBackgroundHTML() {
           DEBUG_MESSAGE("Configured entity " + current_config.entity + " is now " + current_state, true);
           if (current_config.state_url) {
             var url = current_config.state_url[current_state];
-            if (Array.isArray(url)) {
-              state_url = url[randomIntFromInterval(0, url.length - 1)];
-            }
-            else {
-              state_url = current_config.state_url[current_state];
-            }
+            state_url = pickUrl(url);
           }
           Previous_State = current_state;
         }
@@ -397,12 +382,7 @@ function renderBackgroundHTML() {
         Previous_Url = null;
         var url = current_config.default_url;
         if (url) {
-          if (Array.isArray(url)) {
-            state_url = url[randomIntFromInterval(0, url.length - 1)];
-          }
-          else {
-            state_url = url;
-          }
+          state_url = pickUrl(url);
         }
         else {
           if (!current_config.reason) {
@@ -415,12 +395,7 @@ function renderBackgroundHTML() {
     else {
       var url = current_config.default_url;
       if (url) {
-        if (Array.isArray(url)) {
-          state_url = url[randomIntFromInterval(0, url.length - 1)];
-        }
-        else {
-          state_url = url;
-        }
+        state_url = pickUrl(url);
       }
       else {
         if (!current_config.reason) {
@@ -439,6 +414,7 @@ function renderBackgroundHTML() {
   }
 
   processDefaultBackground(temp_enabled);
+  syncRefreshTimer(temp_enabled ? current_config : null);
 
   if (!temp_enabled || !current_config) {
     return;
@@ -591,12 +567,15 @@ function renderBackgroundHTML() {
   }
 }
 
+//returns 'mp4' or 'webm' for a video url, false otherwise. Query strings and fragments (?v=2, #t=5) are ignored
 function urlIsVideo(url) {
-  if (url.slice(url.length - 3).toLowerCase() == "mp4" || url.slice(url.length - 4).toLowerCase() == "webm") {
-    return url.slice(url.length - 3).toLowerCase();
+  if (!url || typeof url !== "string") {
+    return false;
   }
-  if (url.slice(url.length - 4).toLowerCase() == "webm") {
-    return url.slice(url.length - 4).toLowerCase();
+  var clean_url = url.split("?")[0].split("#")[0].toLowerCase();
+  var extension = clean_url.slice(clean_url.lastIndexOf(".") + 1);
+  if (extension == "mp4" || extension == "webm") {
+    return extension;
   }
   return false;
 }
@@ -684,6 +663,7 @@ function processDefaultBackground(temp_enabled) {
 function clearMemes() {
   clearInterval(Meme_Remover);
   Meme_Remover = null;
+  Meme_Count = 0;
 }
 
 function setDebugMode() {
@@ -735,6 +715,15 @@ function run() {
           if (current_config && current_config.entity) {
             //compare the state_url key, not the raw state, so sunset/sunrise also swaps the video
             var current_state = stateKey(current_config);
+            //refresh_on_update: the entity reported again (new last_updated) without changing state
+            var entity_obj = Haobj.states[current_config.entity];
+            var current_update = current_config.entity + "|" + (entity_obj ? entity_obj.last_updated : "");
+            var updated = refreshOption(current_config, "refresh_on_update") && Previous_Update && Previous_Update != current_update;
+            Previous_Update = current_update;
+            if (updated) {
+              DEBUG_MESSAGE(current_config.entity + " updated, picking a new background");
+              Previous_State = null;
+            }
             if (Previous_State != current_state) {
               clearMemes();
               renderBackgroundHTML();
@@ -784,8 +773,8 @@ function run() {
 }
 
 function restart() {
-  clearInterval(wait_interval);
-  var wait_interval = setInterval(() => {
+  clearInterval(Wait_Interval);
+  Wait_Interval = setInterval(() => {
     getVars()
     if (Hui) {
       Previous_Entity = null;
@@ -794,8 +783,9 @@ function restart() {
       View_Loaded = false;
       clearMemes();
       View_Observer.disconnect();
+      clearInterval(Wait_Interval);
+      Wait_Interval = null;
       run();
-      clearInterval(wait_interval);
     }
   }, 200);
 }

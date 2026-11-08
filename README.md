@@ -203,10 +203,16 @@ Configuration for Animated Background goes into the root of your Lovelace config
 | entity | string | **Optional** | Entity to check for state changes
 | night_entity | string | **Optional** | Entity that decides when `<state>-night` keys in `state_url` are used: night is when its state is `below_horizon` or `on`. Default `sun.sun`. See [Night videos](#night-videos)
 | state_url | map | **Optional** | Map of states and video or image urls. Any mp4, webm, or image link will work, even relative `/local/` links. Using locally stored videos will greatly improve loading times. It is recommended to 'cinemagraphs', these videos are only a few seconds long and are meant to loop . Set to 'none' to disable background for the defined state (see example). You can either define a single url or an array. If an array is defined then a random video will be selected from that array. Required if `entity` is defined.
+| refresh_interval | number | **Optional** | Pick a new random video every this many minutes, even if the state hasn't changed. Only useful when the current state has a list of videos. Off by default
+| refresh_on_update | bool | **Optional** | Pick a new random video each time `entity` reports an update (a new `last_updated`), even if the state stays the same. Off by default
 | included_users | list (string) | **Optional** | List of users that will display animated background. If this option is set any users not included in this list will be excluded.
 | included_devices | list (string) | **Optional** | List of devices that will display animated background. If this option is set any devices not included in this list will be excluded. Ex:  iphone, ipad, windows, macintosh, android
 | excluded_users | list (string) | **Optional** | Users to be excluded
 | excluded_devices | list (string) | **Optional** | Devices to be excluded Ex:  iphone, ipad, windows, macintosh, android
+
+When a video list has more than one entry, a new pick skips the video that is already playing.
+
+The user and device lists combine like this: an `excluded_users` or `excluded_devices` match always hides the background, from the root config or a view/group config. Next, `enabled: true` or `false` on a view/group config applies. Then each non-empty `included_users` and `included_devices` list must match; a list on a view/group config replaces the root one.
 
 While all entries are optional, it is recommended to at least set `default_url` or `entity` with `state_url`. Without one of those set you would never know this plugin was installed. 
 
@@ -373,6 +379,8 @@ views:
 | entity | string | **Optional** | Entity to check for state changes
 | night_entity | string | **Optional** | Entity that decides when `<state>-night` keys in `state_url` are used: night is when its state is `below_horizon` or `on`. Default `sun.sun`. See [Night videos](#night-videos)
 | state_url | map | **Optional** | Map of states and video or image urls. Any mp4, webm, or image will work, even relative `/local/` links. Using locally stored videos will greatly improve loading times. It is recommended to 'cinemagraphs', these videos are only a few seconds long and are meant to loop . Set to 'none' to disable background for the defined state (see example). You can either define a single url or an array. If an array is defined then a random video will be selected from that array. Required if `entity` is defined.
+| refresh_interval | number | **Optional** | Pick a new random video every this many minutes, even if the state hasn't changed. Only useful when the current state has a list of videos. Off by default
+| refresh_on_update | bool | **Optional** | Pick a new random video each time `entity` reports an update (a new `last_updated`), even if the state stays the same. Off by default
 | included_users | list (string) | **Optional** | List of users that will display animated background. If this option is set any users not included in this list will be excluded.
 | included_devices | list (string) | **Optional** | List of devices that will display animated background. If this option is set any devices not included in this list will be excluded. Ex:  iphone, ipad, windows, macintosh, android
 | excluded_users | list (string) | **Optional** | Users to be excluded
